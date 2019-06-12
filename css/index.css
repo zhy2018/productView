@@ -1,0 +1,40 @@
+body {
+	margin: auto;
+}
+
+#div_stage {
+	width: 888px;
+	height: 500px;
+	margin: 0px auto;
+	border: 1px solid lightblue;
+	overflow: hidden;
+	perspective: 0px;
+	perspective-origin: 50% 50%;
+}
+
+#div_mask {
+	width: 888px;
+	height: 500px;
+	cursor: move;
+	margin: -500px auto 0px auto;
+	background-color: lightgreen;
+	opacity: 0.02;
+}
+
+#div_container {
+	width: 200px;
+	height: 200px;
+	margin: 0px auto;
+	margin-top: 100px;
+	background-color: rgba(255,0,0,0.02);
+	transform-style: preserve-3d;
+	/*-webkit-animation:rotation 60s linear infinite;*/
+}
+
+.div_block {
+	width: 200px;
+	height: 200px;
+	position: absolute;
+	background-repeat: no-repeat;
+	background-position-y: center;
+}
