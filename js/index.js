@@ -1,7 +1,7 @@
 const view = {
 	x0: 0,
 	y0: 0,
-	rotateX: -15,
+	rotateX: 345,
 	rotateY: 15,
 	speedX: 0,
 	speedY: 0,
@@ -44,19 +44,14 @@ function funcGetProductInfo(path, pointer) {
     if (pointer < imgType.length) funcGetProductInfo(path, pointer);
     else {
       productInfo.face.translateZ = productInfo.left.width / 2;
-      
       productInfo.back.rotateY = 180;
       productInfo.back.translateZ = productInfo.left.width / 2;
-      
       productInfo.left.rotateY = 270;
       productInfo.left.translateZ = productInfo.left.width / 2;
-      
       productInfo.right.rotateY = 90;
       productInfo.right.translateZ = productInfo.face.width - productInfo.right.width / 2;
-      
       productInfo.top.rotateX = 90;
       productInfo.top.translateZ = productInfo.top.height / 2;
-      
       productInfo.bottom.rotateX = 270;
       productInfo.bottom.translateZ = productInfo.bottom.height / 2;
       productInfo.bottom.translateZ += productInfo.face.height - productInfo.bottom.height;
@@ -91,6 +86,7 @@ function funcGetProductInfo(path, pointer) {
 window.onload = function() {
   funcInitProduct('product0');
 };
+
 function funcMouseDown(evt) {
 	view.x0 = evt.clientX;
 	view.y0 = evt.clientY;
@@ -111,48 +107,50 @@ function funcMouseMove(evt) {
 	var y1 = evt.clientY - view.y0;
 	if (x1 == 0 && y1 == 0) return;
 
-	x1 /= 5;
-	x1 = Math.round(x1);
-	x1 = (x1 > 50)  ?  50 : x1;
-	x1 = (x1 < -50) ? -50 : x1;
-	x1 = (x1 >=  0) ?  51 - x1 : -51 - x1;
-	view.speedX = x1;
-
-	y1 /= 5;
-	y1 = Math.round(y1);
-	y1 = (y1 >  50) ?  50 : y1;
-	y1 = (y1 < -50) ? -50 : y1;
-	y1 = (y1 >=  0) ?  51 - y1 : -51 - y1;
-	view.speedY = y1;
+	// 优化操作体验: 同一时刻只旋转幅度更大的轴, x轴或y轴
+	if (Math.abs(x1) >= Math.abs(y1)) {
+		x1 /= 5;
+		x1 = Math.round(x1);
+		x1 = (x1 >  50) ?  50 : x1;
+		x1 = (x1 < -50) ? -50 : x1;
+		x1 = (x1 >=  0) ?  50 - x1 : -50 - x1;
+		view.speedX = x1;
+		view.speedY = 0;
+	} else {
+		y1 /= 5;
+		y1 = Math.round(y1);
+		y1 = (y1 >  50) ?  50 : y1;
+		y1 = (y1 < -50) ? -50 : y1;
+		y1 = (y1 >=  0) ?  50 - y1 : -50 - y1;
+		view.speedY = y1;
+		view.speedX = 0;
+	}
 }
 
 function funcGo() {
 	if (!view.go) return;
 
   var val = "translateZ(0px)";
+	var i = 0.2;
 
   if (view.speedY) {
-    var i = 0.2;
     if (view.speedY < 0) i = -i;
     view.rotateX += i;
     view.rotateX = parseFloat(view.rotateX.toFixed(1));
-    if (view.rotateX >  16) view.rotateX =  16;
-    if (view.rotateX < -16) view.rotateX = -16;
-
-    val += " rotateX(" + view.rotateX + "deg)";
-    // val += " rotateX(-15deg)";
+    if (view.rotateX > 360) view.rotateX = 0;
+    if (view.rotateX < 0)   view.rotateX = 360;
   }
 
   if (view.speedX) {
-		var i = 0.2;
 		if (view.speedX < 0) i = -i;
 		view.rotateY += i;
 		view.rotateY = parseFloat(view.rotateY.toFixed(1));
 		if (view.rotateY > 360) view.rotateY = 0;
 		if (view.rotateY < 0)   view.rotateY = 360;
-
-		val += " rotateY(" + view.rotateY + "deg)";
 	}
+
+	val += " rotateX(" + view.rotateX + "deg)";
+	val += " rotateY(" + view.rotateY + "deg)";
 
 	if (view.speedX || view.speedY) {
     const container = document.getElementById('div_container');
