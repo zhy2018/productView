@@ -160,6 +160,6 @@ function funcGo() {
     container.style.transform = val;
   }
 
-	var max = (Math.abs(view.speedX) <= Math.abs(view.speedY) ? Math.abs(view.speedX) : Math.abs(view.speedY));
-	setTimeout(funcGo, max);
+	// 优化操作体验: 拖动实现缓动
+	setTimeout(funcGo, Math.abs(view.speedX) || Math.abs(view.speedY));
 }
