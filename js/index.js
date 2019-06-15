@@ -83,6 +83,7 @@ function funcGetProductInfo(path, pointer) {
   };
 }
 
+// 执行入口
 window.onload = function() {
   funcInitProduct('product0');
 };
@@ -113,15 +114,17 @@ function funcMouseMove(evt) {
 		x1 = Math.round(x1);
 		x1 = (x1 >  50) ?  50 : x1;
 		x1 = (x1 < -50) ? -50 : x1;
-		x1 = (x1 >=  0) ?  50 - x1 : -50 - x1;
+		x1 = (x1 >=  0) ?  51 - x1 : -51 - x1;
 		view.speedX = x1;
 		view.speedY = 0;
 	} else {
+		// 优化操作体验: 反转上下拖动, 产品随拖动方向旋转
+		y1 = (y1 >= 0) ? -y1 : Math.abs(y1);
 		y1 /= 5;
 		y1 = Math.round(y1);
 		y1 = (y1 >  50) ?  50 : y1;
 		y1 = (y1 < -50) ? -50 : y1;
-		y1 = (y1 >=  0) ?  50 - y1 : -50 - y1;
+		y1 = (y1 >=  0) ?  51 - y1 : -51 - y1;
 		view.speedY = y1;
 		view.speedX = 0;
 	}
