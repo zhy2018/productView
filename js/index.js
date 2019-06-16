@@ -6,6 +6,9 @@ const view = {
 	speedX: 0,
 	speedY: 0,
 	go: true,
+	cancelClick: false,
+	targetX: 0,
+	targetY: 0,
 };
 
 const productInfo = {};
@@ -19,11 +22,11 @@ function funcInitProduct(path) {
   
   console.log('path', path);
   funcGetProductInfo(path, 0);
-  
-  const mask = document.getElementById('div_mask');
-  mask.onmousedown = funcMouseDown;
-  mask.onmouseup = funcMouseUp;
-  mask.onmousemove = funcMouseMove;
+	
+	const stage = document.getElementById('div_stage');
+	stage.onmousedown = funcMouseDown;
+	stage.onmouseup = funcMouseUp;
+	stage.onmousemove = funcMouseMove;
 }
 
 // 获取产品6视图的详细信息
@@ -64,7 +67,7 @@ function funcGetProductInfo(path, pointer) {
         var img = productInfo[item];
         var imgUrl = 'img/' + path + '/' + item + '.jpg';
         html +=
-        '<div class="div_block"'+
+        '<div class="div_block" onclick="funcMouseClick(event)"' +
         ' style="width:' + img.width + 'px; height:' + img.height + 'px;' +
         ' background-image:url(' + imgUrl + ');' +
         ' transform:rotateY(' + (img.rotateY || 0) + 'deg)' +
@@ -75,9 +78,8 @@ function funcGetProductInfo(path, pointer) {
       const container = document.getElementById('div_container');
       container.style.width = productInfo.face.width + 'px';
       container.style.height = productInfo.face.height + 'px';
-      var transform = 'translateZ(0px) rotateX(' + view.rotateX + 'deg)';
-      transform += ' rotateY(' + view.rotateY + 'deg)';
-      container.style.transform = transform;
+      var tf = 'rotateX(' + view.rotateX + 'deg) rotateY(' + view.rotateY + 'deg)';
+      container.style.transform = tf;
       container.innerHTML = html;
     }
   };
@@ -93,6 +95,7 @@ function funcMouseDown(evt) {
 	view.y0 = evt.clientY;
 	view.go = true;
 	funcGo();
+	view.cancelClick = false;
 }
 function funcMouseUp(evt) {
 	view.x0 = 0;
@@ -107,6 +110,8 @@ function funcMouseMove(evt) {
 	var x1 = evt.clientX - view.x0;
 	var y1 = evt.clientY - view.y0;
 	if (x1 == 0 && y1 == 0) return;
+
+	view.cancelClick = true;
 
 	// 优化操作体验: 同一时刻只旋转幅度更大的轴, x轴或y轴
 	if (Math.abs(x1) >= Math.abs(y1)) {
@@ -130,10 +135,24 @@ function funcMouseMove(evt) {
 	}
 }
 
+// 某一面的点击事件
+function funcMouseClick(evt) {
+	if (view.cancelClick) return;
+	var tf = evt.target.style.transform;
+	view.targetX = 360 - parseInt(tf.substr(tf.indexOf('rotateX') + 8, 4), 10);
+	view.targetY = 360 - parseInt(tf.substr(tf.indexOf('rotateY') + 8, 4), 10);
+}
+
+// 缓动到某一面
+function funcMoveToTarget() {
+	const tf = 'rotateX(' + view.rotateX + 'deg) rotateY(' + view.rotateY + 'deg)';
+	const container = document.getElementById('div_container');
+	container.style.transform = tf;
+}
+
 function funcGo() {
 	if (!view.go) return;
 
-  var val = "translateZ(0px)";
 	var i = 0.2;
 
   if (view.speedY) {
@@ -152,12 +171,10 @@ function funcGo() {
 		if (view.rotateY < 0)   view.rotateY = 360;
 	}
 
-	val += " rotateX(" + view.rotateX + "deg)";
-	val += " rotateY(" + view.rotateY + "deg)";
-
 	if (view.speedX || view.speedY) {
+		var tf = 'rotateX(' + view.rotateX + 'deg) rotateY(' + view.rotateY + 'deg)';
     const container = document.getElementById('div_container');
-    container.style.transform = val;
+    container.style.transform = tf;
   }
 
 	// 优化操作体验: 拖动实现缓动
