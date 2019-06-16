@@ -1,7 +1,4 @@
-body {
-	margin: auto;
-}
-
+body { margin: auto; }
 #div_stage {
 	width: 888px;
 	height: 500px;
@@ -10,17 +7,11 @@ body {
 	overflow: hidden;
 	perspective: 0px;
 	perspective-origin: 50% 50%;
-}
-
-#div_mask {
-	width: 888px;
-	height: 500px;
 	cursor: move;
-	margin: -500px auto 0px auto;
-	background-color: lightgreen;
-	opacity: 0.02;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
-
 #div_container {
 	width: 200px;
 	height: 200px;
@@ -30,7 +21,6 @@ body {
 	transform-style: preserve-3d;
 	/*-webkit-animation:rotation 60s linear infinite;*/
 }
-
 .div_block {
 	width: 200px;
 	height: 200px;
