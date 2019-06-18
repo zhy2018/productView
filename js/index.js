@@ -7,8 +7,6 @@ const view = {
 	speedY: 0,
 	go: true,
 	cancelClick: false,
-	targetX: 0,
-	targetY: 0,
 };
 
 const productInfo = {};
@@ -27,6 +25,9 @@ function funcInitProduct(path) {
 	stage.onmousedown = funcMouseDown;
 	stage.onmouseup = funcMouseUp;
 	stage.onmousemove = funcMouseMove;
+	stage.onmousewheel = function(evt) {
+		console.log(evt);
+	};
 }
 
 // 获取产品6视图的详细信息
@@ -135,19 +136,19 @@ function funcMouseMove(evt) {
 	}
 }
 
-// 某一面的点击事件
+// 某一面的点击事件(旋转并过渡到目标面上)
 function funcMouseClick(evt) {
 	if (view.cancelClick) return;
 	var tf = evt.target.style.transform;
-	view.targetX = 360 - parseInt(tf.substr(tf.indexOf('rotateX') + 8, 4), 10);
-	view.targetY = 360 - parseInt(tf.substr(tf.indexOf('rotateY') + 8, 4), 10);
-}
-
-// 缓动到某一面
-function funcMoveToTarget() {
-	const tf = 'rotateX(' + view.rotateX + 'deg) rotateY(' + view.rotateY + 'deg)';
+	view.rotateX = 360 - parseInt(tf.substr(tf.indexOf('rotateX') + 8, 4), 10);
+	view.rotateY = 360 - parseInt(tf.substr(tf.indexOf('rotateY') + 8, 4), 10);
+	tf = 'rotateX(' + view.rotateX + 'deg) rotateY(' + view.rotateY + 'deg)';
 	const container = document.getElementById('div_container');
+	container.style.transition = 'transform 0.4s';
 	container.style.transform = tf;
+	setTimeout(function() {
+		container.style.transition = 'unset';
+	}, 400);
 }
 
 function funcGo() {

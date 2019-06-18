@@ -1,5 +1,4 @@
 body { margin: auto; }
-
 #div_stage {
 	width: 888px;
 	height: 500px;
@@ -9,11 +8,11 @@ body { margin: auto; }
 	perspective: 0px;
 	perspective-origin: 50% 50%;
 	cursor: move;
+	user-select: none;
 	-ms-user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 }
-
 #div_container {
 	width: 200px;
 	height: 200px;
@@ -23,7 +22,6 @@ body { margin: auto; }
 	transform-style: preserve-3d;
 	/*-webkit-animation:rotation 60s linear infinite;*/
 }
-
 .div_block {
 	width: 200px;
 	height: 200px;
