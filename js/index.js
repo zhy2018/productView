@@ -2,11 +2,12 @@ const view = {
 	x0: 0,
 	y0: 0,
 	rotateX: 345,
-	rotateY: 15,
+	rotateY: 345,
 	speedX: 0,
 	speedY: 0,
 	go: true,
 	cancelClick: false,
+	zoom: 1,
 };
 
 const productInfo = {};
@@ -25,9 +26,7 @@ function funcInitProduct(path) {
 	stage.onmousedown = funcMouseDown;
 	stage.onmouseup = funcMouseUp;
 	stage.onmousemove = funcMouseMove;
-	stage.onmousewheel = function(evt) {
-		console.log(evt);
-	};
+	stage.onmousewheel = funcMouseZoom;
 }
 
 // 获取产品6视图的详细信息
@@ -149,6 +148,16 @@ function funcMouseClick(evt) {
 	setTimeout(function() {
 		container.style.transition = 'unset';
 	}, 400);
+}
+
+// 鼠标滚轮可控制产品展示图的缩放
+function funcMouseZoom(evt) {
+	const dir = (evt.wheelDelta >= 0) ? 1 : -1;
+	view.zoom += dir * 0.1;
+	if (view.zoom > 2) view.zoom = 2;
+	if (view.zoom < 0.5) view.zoom = 0.5;
+	const zoomLayer = document.getElementById('div_zoomLayer');
+	zoomLayer.style.transform = 'scale(' + view.zoom + ')';
 }
 
 function funcGo() {

@@ -13,6 +13,9 @@ body { margin: auto; }
 	-moz-user-select: none;
 	-webkit-user-select: none;
 }
+#div_zoomLayer {
+	transition: transform 0.2s;
+}
 #div_container {
 	width: 200px;
 	height: 200px;
