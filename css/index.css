@@ -1,6 +1,6 @@
 body { margin: auto; }
 #div_stage {
-	width: 888px;
+	width: auto;
 	height: 500px;
 	margin: 0px auto;
 	border: 1px solid lightblue;
@@ -31,4 +31,8 @@ body { margin: auto; }
 	position: absolute;
 	background-repeat: no-repeat;
 	background-position-y: center;
+}
+#div_debugInfo {
+	position: absolute;
+	top: 0;
 }

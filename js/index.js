@@ -12,6 +12,11 @@ const view = {
 
 const productInfo = {};
 
+// 执行入口
+window.onload = function() {
+	funcInitProduct('product0');
+};
+
 // 初始化
 function funcInitProduct(path) {
   if (!path) {
@@ -23,10 +28,32 @@ function funcInitProduct(path) {
   funcGetProductInfo(path, 0);
 	
 	const stage = document.getElementById('div_stage');
-	stage.onmousedown = funcMouseDown;
-	stage.onmouseup = funcMouseUp;
-	stage.onmousemove = funcMouseMove;
+	if (funcIsPC()) {
+		stage.onmousedown = funcMouseDown;
+		stage.onmouseup = funcMouseUp;
+		stage.onmousemove = funcMouseMove;
+	} else {
+		stage.ontouchstart = funcMouseDown;
+		stage.ontouchend = funcMouseUp;
+		stage.ontouchmove = funcMouseMove;
+		stage.ontouchcancel = funcMouseUp;
+	}
 	stage.onmousewheel = funcMouseZoom;
+}
+
+// 判断是电脑还是手机
+// true为PC端, false为手机端
+function funcIsPC() {
+		var userAgentInfo = navigator.userAgent;
+		var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+		var flag = true;
+		for (var v = 0; v < Agents.length; v++) {
+				if (userAgentInfo.indexOf(Agents[v]) > 0) {
+						flag = false;
+						break;
+				}
+		}
+		return flag;
 }
 
 // 获取产品6视图的详细信息
@@ -85,14 +112,14 @@ function funcGetProductInfo(path, pointer) {
   };
 }
 
-// 执行入口
-window.onload = function() {
-  funcInitProduct('product0');
-};
-
 function funcMouseDown(evt) {
-	view.x0 = evt.clientX;
-	view.y0 = evt.clientY;
+	if (funcIsPC()) {
+		view.x0 = evt.clientX;
+		view.y0 = evt.clientY;
+	} else {
+		view.x0 = parseInt(evt.touches[0].pageX, 10);
+		view.y0 = parseInt(evt.touches[0].pageY, 10);
+	}
 	view.go = true;
 	funcGo();
 	view.cancelClick = false;
@@ -105,11 +132,18 @@ function funcMouseUp(evt) {
 	view.go = false;
 }
 function funcMouseMove(evt) {
-	if (view.x0 == 0 || view.y0 == 0) return;
+	if (view.x0 === 0 || view.y0 === 0) return;
 
-	var x1 = evt.clientX - view.x0;
-	var y1 = evt.clientY - view.y0;
-	if (x1 == 0 && y1 == 0) return;
+	var x1 = 0;
+	var y1 = 0;
+	if (funcIsPC()) {
+		x1 = evt.clientX - view.x0;
+		y1 = evt.clientY - view.y0;
+	} else {
+		x1 = parseInt(evt.touches[0].pageX, 10) - view.x0;
+		y1 = parseInt(evt.touches[0].pageY, 10) - view.y0;
+	}
+	if (x1 === 0 && y1 === 0) return;
 
 	view.cancelClick = true;
 
